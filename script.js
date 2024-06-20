@@ -1,4 +1,5 @@
 const timeZonesElement = document.getElementById('time-zones');
+const searchInput = document.getElementById('search-input');
 
 const timeZones = {
     "Afghanistan": "Asia/Kabul",
@@ -197,21 +198,44 @@ const timeZones = {
     "Zimbabwe": "Africa/Harare"
 };
 
+const dayIcon = '☀️';
+const nightIcon = '🌙';
+
 function fetchTime(timeZone) {
     return fetch(`https://worldtimeapi.org/api/timezone/${timeZone}`)
         .then(response => response.json())
-        .then(data => data.datetime)
+        .then(data => ({
+            datetime: data.datetime,
+            isDaytime: data.datetime.includes('T') && (parseInt(data.datetime.split('T')[1].split(':')[0]) >= 6 && parseInt(data.datetime.split('T')[1].split(':')[0]) < 18)
+        }))
         .catch(error => console.error('Error fetching time:', error));
 }
 
-async function displayTimeZones() {
-    for (const [country, timeZone] of Object.entries(timeZones)) {
-        const time = await fetchTime(timeZone);
+async function displayTimeZones(filter = '') {
+    timeZonesElement.innerHTML = ''; // Clear previous results
+    const filteredTimeZones = Object.entries(timeZones).filter(([country]) =>
+        country.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    for (const [country, timeZone] of filteredTimeZones) {
+        const { datetime, isDaytime } = await fetchTime(timeZone);
+        const date = datetime.split('T')[0];
+        const time = datetime.split('T')[1].split('.')[0];
         const timeZoneElement = document.createElement('div');
         timeZoneElement.className = 'time-zone';
-        timeZoneElement.innerHTML = `<h2>${country}</h2><p>${time}</p>`;
+        timeZoneElement.innerHTML = `
+            <h2>${country}</h2>
+            <p class="time">${time}</p>
+            <p>${date}</p>
+            <div class="icon">${isDaytime ? dayIcon : nightIcon}</div>
+        `;
         timeZonesElement.appendChild(timeZoneElement);
     }
 }
+
+searchInput.addEventListener('input', () => {
+    const filter = searchInput.value;
+    displayTimeZones(filter);
+});
 
 displayTimeZones();
