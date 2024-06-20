@@ -3,15 +3,23 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0;
-    padding: 0;
-    height: 100vh;
+    padding: 20px;
     background-color: #f0f0f0;
 }
 
 h1 {
     margin-bottom: 20px;
+}
+
+#search-input {
+    margin-bottom: 20px;
+    padding: 10px;
+    width: 80%;
+    max-width: 400px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
 }
 
 #time-zones {
@@ -28,6 +36,7 @@ h1 {
     padding: 20px;
     text-align: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .time-zone h2 {
@@ -37,3 +46,16 @@ h1 {
 .time-zone p {
     margin: 0;
 }
+
+.time-zone .time {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.time-zone .icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5em;
+}
+
